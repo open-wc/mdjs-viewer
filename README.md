@@ -16,11 +16,13 @@ You can see live demos in
 This extension modifies the CSP (Content Security Policy) for github.com with the following rules:
 
 - adds to script-src
-  - `'unsafe-eval'` to allow [wasm](https://webassembly.org/) as it is used to analyze the code
-  - `data:` so code can be executed as individual modules (for issues)
+  - `'unsafe-eval'` to allow [wasm](https://webassembly.org/) to analyze the code (moving action background will remove that need)
+  - `'unsafe-inline'` to execute code within the mdjs iframe
   - `unpkg.com` to load dependencies from
 - adds to connect-src
   - `raw.githubusercontent.com` to fetch raw md content and package.json
+- adds to frame-src
+  - `data:` to enable setting the content of the mdjs iframe
 
 ## Installation
 
@@ -45,14 +47,13 @@ Enable the extension and visit the following pages
 
 ## How does it work?
 
-First we need to get the raw md text which we then pass though [mdjs](https://www.npmjs.com/package/@mdjs/core) and an extra plugin which replaces all imports (relative and bare imports) with [unpkg.com](https://unpkg.com/) urls with the `?module` flag. This way all dependencies can be directly loaded in the browser without the need of any service.
+It adds a button `show demo ▹` to markdown pages and issues. Once you press it will get the raw md text which then gets pass though [mdjs](https://www.npmjs.com/package/@mdjs/core) and an extra plugin which replaces all imports (relative and bare imports) with [unpkg.com](https://unpkg.com/) urls with the `?module` flag. This way all dependencies can be directly loaded in the browser without the need of any service.
 
-Finally mdjs gives us a separate html and js output. The html we write directly into the page and the js code we execute in it's one module context. This means your demos are directly available within the page where the markdown is.
+Finally we create an iframe with the content of the mdjs html and js output.
 
 ## Issues/ToDos/Future work
 
 - Security review!!!
-- Support preview when editing issues
 - Support relative imports from not root md files
 - Support relative links
 - Support github page switches (without manual reload)

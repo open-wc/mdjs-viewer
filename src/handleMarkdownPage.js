@@ -1,5 +1,5 @@
-import { isMdjsContent, mdjsProcess, resolveToUnpkg } from '../dist/index.js';
-import { evalModuleCode } from './evalModuleCode.js';
+import { isMdjsContent } from '../dist/index.js';
+import { createTriggerViewer } from './createTriggerViewer.js';
 
 function getPkgJsonUrl(urlString) {
   const lengthToFirstSlashAfterBlob = urlString.indexOf('/', urlString.indexOf('blob/') + 5);
@@ -17,23 +17,21 @@ function getMdjsUrl(urlString) {
   return url;
 }
 
-export async function handleMarkdownPage() {
-  const url = document.location.href;
-  const currentUrl = url.includes('/blob/') ? url : `${url}/blob/master/README.md`;
-  const mdBody = document.querySelector('#readme .markdown-body');
+export async function handleMarkdownPage({ url = document.location.href, root = document } = {}) {
+  const fetchUrl = url.includes('/blob/') ? url : `${url}/blob/master/README.md`;
+  const mdBody = root.querySelector('#readme .markdown-body');
   if (mdBody) {
-    const responseMdjs = await fetch(getMdjsUrl(currentUrl));
-    const responsePkgJson = await fetch(getPkgJsonUrl(currentUrl));
+    const responseMdjs = await fetch(getMdjsUrl(fetchUrl));
+    const responsePkgJson = await fetch(getPkgJsonUrl(fetchUrl));
 
     // if HTTP-status is 200-299
     if (responseMdjs.ok && responsePkgJson.ok) {
       const text = await responseMdjs.text();
       if (isMdjsContent(text)) {
+        mdBody.style.position = 'relative';
         const pkgJson = await responsePkgJson.json();
-        const data = await mdjsProcess(text);
-        mdBody.innerHTML = data.html;
-        const executeCode = await resolveToUnpkg(data.jsCode, pkgJson);
-        await evalModuleCode(executeCode);
+        const viewer = createTriggerViewer(text, { type: 'readme-show', pkgJson });
+        mdBody.appendChild(viewer);
       }
     }
   }

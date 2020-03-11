@@ -1,8 +1,8 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
-import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export default {
   input: 'node_modules/@mdjs/core/index.js',
@@ -16,6 +16,6 @@ export default {
     json(),
     commonjs(),
     globals(),
-    builtins(),
+    nodePolyfills(),
   ],
 };
