@@ -58,6 +58,8 @@ export async function createViewer(mdjs, { type, width, height, pkgJson = {} }) 
     min-height: ${height}px;
   `,
   );
+  iframeViewer.setAttribute('csp', "script-src unpkg.com 'unsafe-inline'; connect-src 'none'");
+
   iframeViewer.setAttribute('iframe-viewer-id', counter);
   return { iframe: iframeViewer, id: counter };
 }
