@@ -11,18 +11,25 @@ You can see live demos in
 - Preview of new issues
 - ... more is planned but not yet implemented
 
-## Warning
+## Security
 
-This extension modifies the CSP (Content Security Policy) for github.com with the following rules:
+This extension takes care of security by
+
+- not executing any code without user action (e.g. requires a click of a button first)
+- shows demos/executes code within an iframe
+  - that uses [sandbox](https://www.w3schools.com/tags/att_iframe_sandbox.asp) with the following settings `sandbox="allow-scripts"`
+  - populates the iframe with a data uri
+  - does not allow any requests (except unpkg) to got outside of the iframe
+
+This prevents [all known attack vectors](https://github.com/open-wc/mdjs-viewer/issues/2). If you come up with new once please [report them](https://github.com/open-wc/mdjs-viewer/issues/new).
+
+### Warning
+
+In order to function this extension modifies the CSP (Content Security Policy) for github.com with the following rules:
 
 - adds to script-src
-  - `'unsafe-eval'` to allow [wasm](https://webassembly.org/) to analyze the code (moving action background will remove that need)
-  - `'unsafe-inline'` to execute code within the mdjs iframe
-  - `unpkg.com` to load dependencies from
-- adds to connect-src
-  - `raw.githubusercontent.com` to fetch raw md content and package.json
-- adds to frame-src
-  - `data:` to enable setting the content of the mdjs iframe
+  - `'unsafe-inline'` to execute code blocks within the mdjs iframe
+  - `unpkg.com` to load user dependencies from within the mdjs iframe
 
 ## Installation
 
@@ -53,12 +60,11 @@ Finally we create an iframe with the content of the mdjs html and js output.
 
 ## Issues/ToDos/Future work
 
-- Security review!!!
+- Even more security checks
 - Support relative imports from not root md files
 - Support relative links
 - Support github page switches (without manual reload)
-- Do the mdjs processing in the "background" (extension context or web worker) and not in the content window
 - Support in github pull request
 - Support npmjs
 - Support gitlab
-- Allow to define on which pages mdjs gets executed
+- Allow users to define on which urls mdjs-viewer gets loaded/executed

@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { isMdjsContent } from '../dist/index.js';
+import { isMdjsContentFork } from './isMdjsContentFork.js';
 import { createViewer } from './createViewer.js';
 import { createTriggerViewer } from './createTriggerViewer.js';
 
@@ -26,7 +26,7 @@ function handleCommentPreviews() {
         '.js-preview-body',
       );
 
-      if (textarea && textarea.value && isMdjsContent(textarea.value)) {
+      if (textarea && textarea.value && isMdjsContentFork(textarea.value)) {
         childMutationToHappen(previewBody).then(() => {
           const dimensions = previewBody.getBoundingClientRect();
           createViewer(textarea.value, {
@@ -55,7 +55,7 @@ export async function handleIssuePage({ node = document } = {}) {
     const textarea = issueMsgNode.querySelector(
       '[name=issue_comment\\[body\\]], [name=issue\\[body\\]], [name=commit_comment\\[body\\]], [name=pull_request\\[body\\]]',
     );
-    if (textarea && textarea.value && isMdjsContent(textarea.value)) {
+    if (textarea && textarea.value && isMdjsContentFork(textarea.value)) {
       const issueBody = issueMsgNode.querySelector('.d-block.js-comment-body');
       issueBody.style.position = 'relative';
       const button = createTriggerViewer(textarea.value, {

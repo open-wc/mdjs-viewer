@@ -1,7 +1,8 @@
 import { handleIssuePage } from './handleIssuePage.js';
 import { handleMarkdownPage } from './handleMarkdownPage.js';
 
-async function main() {
+// main gets executed by the esm-loader
+export async function main() {
   await handleIssuePage();
   await handleMarkdownPage();
 
@@ -24,5 +25,3 @@ async function main() {
     }
   });
 }
-
-main();

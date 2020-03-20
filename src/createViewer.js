@@ -1,15 +1,20 @@
-import { resolveToUnpkg, mdjsProcess } from '../dist/index.js';
+/* global chrome */
+
+import { getFromBackground } from './getFromBackground.js';
 
 let counter = 0;
 
 export async function createViewer(mdjs, { type, width, height, pkgJson = {} }) {
   counter += 1;
-  const data = await mdjsProcess(mdjs);
-  const executeCode = await resolveToUnpkg(data.jsCode, pkgJson);
+  const data = await getFromBackground({
+    action: 'mdjs+unpkg',
+    mdjs,
+    pkgJson,
+  });
   const iframeViewer = document.createElement('iframe');
   const iframeContent = `
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://unpkg.com/github-markdown-css@4.0.0/github-markdown.css">
+    <link rel="stylesheet" href="${chrome.extension.getURL('./dist/github-markdown.css')}">
     <style>
       body {
         margin: 0;
@@ -32,7 +37,7 @@ export async function createViewer(mdjs, { type, width, height, pkgJson = {} }) 
         parent.postMessage(JSON.stringify(data), '*');
       });
       observer.observe(document.body);
-      ${executeCode}
+      ${data.jsCode}
     </script>
     <body>
       <div class="markdown-body">
@@ -41,13 +46,10 @@ export async function createViewer(mdjs, { type, width, height, pkgJson = {} }) 
     </body>
   `;
 
-  iframeViewer.src = `data:text/html;charset=utf-8,${escape(iframeContent)}`;
-
   const position =
     type === 'issue-show' || type === 'readme-show'
       ? `position: absolute; left: 15px; top: 15px;`
       : '';
-
   iframeViewer.setAttribute(
     'style',
     `
@@ -58,8 +60,13 @@ export async function createViewer(mdjs, { type, width, height, pkgJson = {} }) 
     min-height: ${height}px;
   `,
   );
+  iframeViewer.setAttribute('sandbox', 'allow-scripts');
   iframeViewer.setAttribute('csp', "script-src unpkg.com 'unsafe-inline'; connect-src 'none'");
-
   iframeViewer.setAttribute('iframe-viewer-id', counter);
+
+  // Uses a data url as when using srcdoc the iframe csp rules get ignored?
+  // iframeViewer.setAttribute('srcdoc', iframeContent);
+  iframeViewer.src = `data:text/html;charset=utf-8,${escape(iframeContent)}`;
+
   return { iframe: iframeViewer, id: counter };
 }

@@ -1,4 +1,5 @@
 /* global chrome */
+import { resolveToUnpkg, mdjsProcess } from '../dist/index.js';
 
 // chrome.browserAction.onClicked.addListener(async tab => {
 //   // Send a message to the active tab
@@ -10,6 +11,43 @@
 //   });
 // });
 
+chrome.runtime.onMessage.addListener(({ action, ...options }, sender, sendResponse) => {
+  if (action === 'mdjs+unpkg') {
+    const { mdjs, pkgJson } = options;
+    (async () => {
+      const data = await mdjsProcess(mdjs);
+      const executeCode = await resolveToUnpkg(data.jsCode, pkgJson);
+      sendResponse({ jsCode: executeCode, html: data.html });
+    })();
+  }
+  if (action === 'fetch') {
+    const { url, fetchProcess } = options;
+    (async () => {
+      const response = await fetch(url);
+
+      // if HTTP-status is 200-299
+      if (response.ok) {
+        let data;
+        switch (fetchProcess) {
+          case 'text':
+            data = await response.text();
+            break;
+          case 'json':
+            data = await response.json();
+            break;
+          /* no default */
+        }
+        sendResponse({ ok: response.ok, data });
+      } else {
+        sendResponse({ ok: response.ok });
+      }
+    })();
+  }
+
+  // mark this message as async
+  return true;
+});
+
 function onHeadersReceived(details) {
   const responseHeaders = [];
   for (const header of details.responseHeaders) {
@@ -17,19 +55,9 @@ function onHeadersReceived(details) {
     let { value } = header;
     if (name.toLowerCase() === 'content-security-policy') {
       // adds to script-src
-      // - `'unsafe-eval'` to allow [wasm](https://webassembly.org/) to analyze the code (moving action background will remove that need)
-      // - `'unsafe-inline'` to execute code within the mdjs iframe
-      // - `unpkg.com` to load dependencies from
-      value = value.replace('script-src', "script-src 'unsafe-eval' 'unsafe-inline' unpkg.com");
-      // adds to connect-src
-      // - `raw.githubusercontent.com` to fetch raw md content and package.json
-      value = value.replace('connect-src', 'connect-src raw.githubusercontent.com');
-      // adds to frame-src
-      // - `data:` to enable setting the content of the mdjs iframe
-      value = value.replace('frame-src', 'frame-src data:');
-      // adds to style-src
-      // - raw.githubusercontent.com to fetch raw md content and package.json
-      value = value.replace('style-src', 'style-src unpkg.com');
+      // - `'unsafe-inline'` to execute code blocks within the mdjs iframe
+      // - `unpkg.com` to load user dependencies from within the mdjs iframe
+      value = value.replace('script-src', "script-src 'unsafe-inline' unpkg.com");
     }
     responseHeaders.push({ name, value });
   }

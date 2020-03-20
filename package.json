@@ -14,7 +14,7 @@
   "author": "open-wc",
   "homepage": "https://github.com/open-wc/mdjs-viewer/",
   "scripts": {
-    "build": "rollup -c ./rollup.config.js",
+    "build": "rollup -c ./rollup.config.js && cp node_modules/github-markdown-css/github-markdown.css ./dist",
     "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
     "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
     "lint:prettier": "prettier \"**/*.js\" --check --ignore-path .gitignore",
@@ -62,6 +62,7 @@
     ]
   },
   "dependencies": {
-    "@mdjs/core": "^0.1.0"
+    "@mdjs/core": "^0.1.0",
+    "github-markdown-css": "^4.0.0"
   }
 }
