@@ -1,19 +1,26 @@
 # Markdown JavaScript Viewer (mdjs-viewer)
 
-This is a POC of a chrome extension.
+[mdjs (Markdown JavaScript)](https://www.npmjs.com/package/@mdjs/core) allows to execute code and show interactive demos within your markdown documentation.
 
-It allows to view and use [mdjs](https://www.npmjs.com/package/@mdjs/core) directly on github.com.
+This extension takes this functionality and enables it directly on github.com.
 
 You can see live demos in
 
-- Markdown files (like README.md)
-- Issues
-- Preview of new issues
+- Github Markdown files (like README.md)
+- Github Issues (incl. edit preview, new comment preview, new issue preview)
 - ... more is planned but not yet implemented
+
+## Intro
+
+![Screencast of usage on github](./dev_assets/mdjs-viewer-intro.gif)
 
 ## Security
 
-This extension takes care of security by
+Executing user code especially in github issues can be dangerous.
+This extension isolates code executing as much as possible.
+It can be considered as secure as any page that executes user code like codepen or jsfiddle.
+
+The Security Measures are:
 
 - not executing any code without user action (e.g. requires a click of a button first)
 - shows demos/executes code within an iframe
@@ -63,7 +70,6 @@ Finally we create an iframe with the content of the mdjs html and js output.
 - Even more security checks
 - Support relative imports from not root md files
 - Support relative links
-- Support github page switches (without manual reload)
 - Support in github pull request
 - Support npmjs
 - Support gitlab

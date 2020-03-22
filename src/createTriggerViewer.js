@@ -7,6 +7,7 @@ export function createTriggerViewer(text, { type, pkgJson = {} }) {
   button.style.top = '15px';
   button.style.right = '15px';
   button.style.zIndex = 100;
+  button.setAttribute('class', 'btn btn-sm');
 
   button.addEventListener('click', async ev => {
     if (!ev.target.hasAttribute('for-iframe-viewer-id')) {

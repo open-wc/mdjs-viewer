@@ -11,6 +11,23 @@ import { resolveToUnpkg, mdjsProcess } from '../dist/index.js';
 //   });
 // });
 
+let loadCounter = 2;
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url) {
+    loadCounter = 2;
+  }
+  if (changeInfo.status === 'complete') {
+    loadCounter -= 1;
+  }
+
+  if (loadCounter === 0) {
+    chrome.tabs.sendMessage(tabId, {
+      action: 'url-changed',
+      url: changeInfo.url,
+    });
+  }
+});
+
 chrome.runtime.onMessage.addListener(({ action, ...options }, sender, sendResponse) => {
   if (action === 'mdjs+unpkg') {
     const { mdjs, pkgJson } = options;

@@ -15,7 +15,7 @@ function childMutationToHappen(node) {
 
 function handleCommentPreviews() {
   const previewButtons = document.querySelectorAll(
-    '.unminimized-comment .js-preview-tab, .discussion-timeline-actions .js-preview-tab',
+    '.unminimized-comment .js-preview-tab, .discussion-timeline-actions .js-preview-tab, .timeline-new-comment .js-preview-tab',
   );
   for (const previewButton of previewButtons) {
     previewButton.addEventListener('click', ev => {
