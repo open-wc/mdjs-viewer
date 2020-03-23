@@ -40,6 +40,12 @@ In order to function this extension modifies the CSP (Content Security Policy) f
 
 ## Installation
 
+### Via Chrome Web Store
+
+Go to [mdjs-viewer on chrome web store](https://chrome.google.com/webstore/detail/mdjs-viewer/ifkkmomkjknligelmlcnakclabgohafe).
+
+### Via GitHub
+
 1. Download
 
    ```bash
@@ -64,6 +70,13 @@ Enable the extension and visit the following pages
 It adds a button `show demo ▹` to markdown pages and issues. Once you press it will get the raw md text which then gets pass though [mdjs](https://www.npmjs.com/package/@mdjs/core) and an extra plugin which replaces all imports (relative and bare imports) with [unpkg.com](https://unpkg.com/) urls with the `?module` flag. This way all dependencies can be directly loaded in the browser without the need of any service.
 
 Finally we create an iframe with the content of the mdjs html and js output.
+
+## Limits
+
+In order to get the raw md content of an issues (only the first message not following comments) a request to api.github.com is required.
+This request is only needed if you actually click on the `show demo ▹` button.
+There is a hard limit of 60 anonymous api calls to github per hour.
+For more an API key is needed. (You can not yet provide it to the extension 🙈 - feel free to open a feature request)
 
 ## Issues/ToDos/Future work
 
