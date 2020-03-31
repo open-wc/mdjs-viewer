@@ -1,7 +1,7 @@
 {
   "name": "mdjs-viewer",
   "description": "See Markdown JavaScript demos directly on github.com",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "manifest_version": 2,
   "permissions": ["webRequest", "webRequestBlocking", "https://github.com/*"],
   "content_scripts": [
