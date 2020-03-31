@@ -1,5 +1,6 @@
 /* global chrome */
-import { resolveToUnpkg, mdjsProcess } from '../dist/index.js';
+import { mdjsProcess } from '../deps/mdjs-core.js';
+import { resolveToUnpkg } from './resolveToUnpkg.js';
 
 // chrome.browserAction.onClicked.addListener(async tab => {
 //   // Send a message to the active tab
@@ -30,10 +31,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 
 chrome.runtime.onMessage.addListener(({ action, ...options }, sender, sendResponse) => {
   if (action === 'mdjs+unpkg') {
-    const { mdjs, pkgJson } = options;
+    const { mdjs, pkgJson, urlData } = options;
     (async () => {
       const data = await mdjsProcess(mdjs);
-      const executeCode = await resolveToUnpkg(data.jsCode, pkgJson);
+      const executeCode = await resolveToUnpkg(data.jsCode, pkgJson, urlData);
       sendResponse({ jsCode: executeCode, html: data.html });
     })();
   }

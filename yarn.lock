@@ -2473,7 +2473,7 @@ es-dev-server@^1.45.2:
     useragent "^2.3.0"
     whatwg-url "^7.0.0"
 
-es-module-lexer@^0.3.13:
+es-module-lexer@^0.3.13, es-module-lexer@^0.3.17:
   version "0.3.17"
   resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-0.3.17.tgz#a248dec2870934d9054420fead19db095ea21537"
   integrity sha512-nwvMtzyEB6FhlyXBlV+BW2By3Vn2sUvlQBYP4LvdK8YpdbFQUOiBoeuB7/ip1+EbjmgNydkJ8+dIlyO09VP9BA==

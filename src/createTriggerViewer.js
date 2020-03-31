@@ -1,6 +1,6 @@
 import { createViewer } from './createViewer.js';
 
-export function createTriggerViewer(text, { type, pkgJson = {} }) {
+export function createTriggerViewer(text, { type, pkgJson = {}, urlData }) {
   const button = document.createElement('button');
   button.innerText = 'show demo ▹';
   button.style.position = 'absolute';
@@ -18,6 +18,7 @@ export function createTriggerViewer(text, { type, pkgJson = {} }) {
         width: dimensions.width,
         height: dimensions.height,
         pkgJson,
+        urlData,
       });
       issueBody.appendChild(addViewer.iframe);
       ev.target.setAttribute('for-iframe-viewer-id', addViewer.id);

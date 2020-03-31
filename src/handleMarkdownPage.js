@@ -1,31 +1,19 @@
 import { isMdjsContentFork } from './isMdjsContentFork.js';
 import { createTriggerViewer } from './createTriggerViewer.js';
 import { getFromBackground } from './getFromBackground.js';
-
-function getPkgJsonUrl(urlString) {
-  const lengthToFirstSlashAfterBlob = urlString.indexOf('/', urlString.indexOf('blob/') + 5);
-  const pathWithBlob = `${urlString.substring(0, lengthToFirstSlashAfterBlob)}/package.json`;
-  const url = new URL(urlString);
-  url.host = 'raw.githubusercontent.com';
-  url.pathname = pathWithBlob.replace('/blob', '');
-  return url;
-}
-
-function getMdjsUrl(urlString) {
-  const url = new URL(urlString);
-  url.host = 'raw.githubusercontent.com';
-  url.pathname = url.pathname.replace('/blob', '');
-  return url;
-}
+import { getMdjsUrl } from './getMdjsUrl.js';
+import { getPkgJsonUrl } from './getPkgJsonUrl.js';
+import { getGithubUrlData } from './getGithubUrlData.js';
 
 export async function handleMarkdownPage({ url = document.location.href, root = document } = {}) {
   const fetchUrl = url.includes('/blob/') ? url : `${url}/blob/master/README.md`;
   const mdBody = root.querySelector('#readme .markdown-body');
   if (mdBody) {
+    const mdjsUrl = getMdjsUrl(fetchUrl);
     const responseMdjs = await getFromBackground({
       action: 'fetch',
       fetchProcess: 'text',
-      url: getMdjsUrl(fetchUrl),
+      url: mdjsUrl,
     });
     const responsePkgJson = await getFromBackground({
       action: 'fetch',
@@ -39,7 +27,8 @@ export async function handleMarkdownPage({ url = document.location.href, root = 
       if (isMdjsContentFork(text)) {
         mdBody.style.position = 'relative';
         const pkgJson = await responsePkgJson.data;
-        const viewer = createTriggerViewer(text, { type: 'readme-show', pkgJson });
+        const urlData = getGithubUrlData(mdjsUrl.href);
+        const viewer = createTriggerViewer(text, { type: 'readme-show', pkgJson, urlData });
         mdBody.appendChild(viewer);
       }
     }

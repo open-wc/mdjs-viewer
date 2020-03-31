@@ -10,7 +10,7 @@
       "js": ["esm-loaders/esm-loader-content.js"]
     }
   ],
-  "web_accessible_resources": ["src/*.js", "dist/index.js", "dist/github-markdown.css"],
+  "web_accessible_resources": ["src/*.js", "deps/*"],
   "content_security_policy": "script-src 'self' 'unsafe-eval' unpkg.com; object-src 'self'",
   "background": {
     "page": "esm-loaders/esm-loader-background.html",

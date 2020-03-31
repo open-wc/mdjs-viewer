@@ -4,17 +4,18 @@ import { getFromBackground } from './getFromBackground.js';
 
 let counter = 0;
 
-export async function createViewer(mdjs, { type, width, height, pkgJson = {} }) {
+export async function createViewer(mdjs, { type, width, height, pkgJson = {}, urlData }) {
   counter += 1;
   const data = await getFromBackground({
     action: 'mdjs+unpkg',
     mdjs,
     pkgJson,
+    urlData,
   });
   const iframeViewer = document.createElement('iframe');
   const iframeContent = `
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="${chrome.extension.getURL('./dist/github-markdown.css')}">
+    <link rel="stylesheet" href="${chrome.extension.getURL('./deps/github-markdown.css')}">
     <style>
       body {
         margin: 0;
@@ -46,17 +47,26 @@ export async function createViewer(mdjs, { type, width, height, pkgJson = {} }) 
     </body>
   `;
 
-  const position =
-    type === 'issue-show' || type === 'readme-show'
-      ? `position: absolute; left: 15px; top: 15px;`
-      : '';
+  let position = '';
+  switch (type) {
+    case 'issue-show':
+      position = `position: absolute; left: 15px; top: 15px;`;
+      break;
+    case 'readme-show':
+      position = `position: absolute; left: 0; top: 0;`;
+      break;
+    /* no default */
+  }
+
+  const minWidth = type === 'issue-show' ? width - 30 : width;
+
   iframeViewer.setAttribute(
     'style',
     `
     ${position}
     border: none;
     background: #fff;
-    min-width: ${width - 30}px;
+    min-width: ${minWidth}px;
     min-height: ${height}px;
   `,
   );

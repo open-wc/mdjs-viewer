@@ -28,7 +28,7 @@ export const usage = () => {
 
     expect(output).dom.to.equal(`
       <div class="d-block js-comment-body" style="position: relative;">
-        <button style="position: absolute; top: 15px; right: 15px; z-index: 100;">show demo ▹</button>
+        <button class="btn btn-sm" style="position: absolute; top: 15px; right: 15px; z-index: 100;">show demo ▹</button>
       </div>
     `);
   });

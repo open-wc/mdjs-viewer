@@ -7,7 +7,7 @@ import nodePolyfills from 'rollup-plugin-node-polyfills';
 export default {
   input: 'node_modules/@mdjs/core/index.js',
   output: {
-    dir: 'dist',
+    file: 'deps/mdjs-core.js',
     format: 'esm',
   },
   plugins: [
