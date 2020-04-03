@@ -1,5 +1,9 @@
 export function getMdjsUrl(urlString) {
   const url = new URL(urlString);
+  if (url.host === 'raw.githubusercontent.com') {
+    return url;
+  }
+
   url.host = 'raw.githubusercontent.com';
   const { pathname } = url;
 
@@ -38,5 +42,6 @@ export function getMdjsUrl(urlString) {
   }
 
   url.pathname = `${repo}/${branch}/${finalPath}`;
+
   return url;
 }

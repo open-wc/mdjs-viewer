@@ -91,19 +91,19 @@ describe('resolveToUnpkg', () => {
     };
     const resultRoot = await resolveToUnpkg("import './some-file.js';", pkgJson, {
       fileUrl: 'http://domain.com/README.md',
-      rootUrl: 'http://domain.com/',
+      rootUrl: 'http://domain.com',
     });
     expect(resultRoot).to.equal("import 'https://unpkg.com/my-el@3.3.3/some-file.js?module';");
 
     const resultDocs = await resolveToUnpkg("import '../some-file.js';", pkgJson, {
       fileUrl: 'http://domain.com/docs/README.md',
-      rootUrl: 'http://domain.com/',
+      rootUrl: 'http://domain.com',
     });
     expect(resultDocs).to.equal("import 'https://unpkg.com/my-el@3.3.3/some-file.js?module';");
 
     const resultDocsSub = await resolveToUnpkg("import '../foo/some-file.js';", pkgJson, {
       fileUrl: 'http://domain.com/docs/README.md',
-      rootUrl: 'http://domain.com/',
+      rootUrl: 'http://domain.com',
     });
     expect(resultDocsSub).to.equal(
       "import 'https://unpkg.com/my-el@3.3.3/foo/some-file.js?module';",
@@ -111,7 +111,7 @@ describe('resolveToUnpkg', () => {
 
     const resultDocsDeep = await resolveToUnpkg("import '../foo/some-file.js';", pkgJson, {
       fileUrl: 'http://domain.com/docs/deep/README.md',
-      rootUrl: 'http://domain.com/',
+      rootUrl: 'http://domain.com',
     });
     expect(resultDocsDeep).to.equal(
       "import 'https://unpkg.com/my-el@3.3.3/docs/foo/some-file.js?module';",

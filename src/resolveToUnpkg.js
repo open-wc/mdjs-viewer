@@ -26,7 +26,7 @@ function getPkgMetaFromImport(
 ) {
   if (pkgImport.startsWith('./') || pkgImport.startsWith('../')) {
     const resolvedUrl = new URL(pkgImport, urlData.fileUrl).href;
-    const path = resolvedUrl.substr(urlData.rootUrl.length - 1);
+    const path = resolvedUrl.substr(urlData.rootUrl.length);
 
     return {
       name: fallbackName,

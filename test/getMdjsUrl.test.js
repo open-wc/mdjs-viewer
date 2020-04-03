@@ -14,6 +14,13 @@ describe('getMdjsUrl', () => {
     );
   });
 
+  it('does not touch urls which are raw.githubusercontent.com already', async () => {
+    expect(
+      getMdjsUrl('https://raw.githubusercontent.com/daKmoR/demo-wc-card/master/docs/README.md')
+        .href,
+    ).to.equal('https://raw.githubusercontent.com/daKmoR/demo-wc-card/master/docs/README.md');
+  });
+
   it('resolves markdown file when on a markdown file directly', async () => {
     expect(
       getMdjsUrl('https://github.com/daKmoR/demo-wc-card/blob/master/docs/variations.md').href,
